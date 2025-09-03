@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug - Belle de Jour</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { background: red; color: white; padding: 10px; margin: 10px 0; }
+        .logo-test { max-width: 200px; border: 2px solid blue; }
+    </style>
+</head>
+<body>
+    <h1>Teste de Debug</h1>
+    <div class="test">Se você vê este texto vermelho, o CSS está funcionando</div>
+    
+    <h2>Teste da Logo:</h2>
+    <img src="img/logo.jpg" alt="Logo" class="logo-test">
+    
+    <h2>Informações:</h2>
+    <p>Caminho da imagem: img/logo.jpg</p>
+    <p>Servidor rodando em: http://localhost:3000</p>
+    
+    <script>
+        console.log('JavaScript funcionando!');
+        
+        // Testar se a imagem carrega
+        const img = document.querySelector('.logo-test');
+        img.onload = function() {
+            console.log('Imagem carregou com sucesso!');
+            document.body.innerHTML += '<p style="color: green;">✅ Imagem carregou!</p>';
+        };
+        img.onerror = function() {
+            console.log('Erro ao carregar imagem!');
+            document.body.innerHTML += '<p style="color: red;">❌ Erro ao carregar imagem!</p>';
+        };
+    </script>
+</body>
+</html>

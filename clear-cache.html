@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpar Cache - Belle de Jour</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .btn {
+            background: #d4af37;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #b8941f;
+        }
+        .success {
+            color: green;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Limpar Cache do Site</h1>
+    <p>Clique no botão abaixo para limpar todos os dados salvos e forçar o carregamento da logo correta.</p>
+    
+    <button class="btn" onclick="clearAllData()">Limpar Cache e Dados</button>
+    <button class="btn" onclick="goToSite()">Ir para o Site</button>
+    
+    <div id="message"></div>
+    
+    <script>
+        function clearAllData() {
+            // Limpar localStorage
+            localStorage.clear();
+            
+            // Limpar sessionStorage
+            sessionStorage.clear();
+            
+            // Limpar cookies (se houver)
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+            
+            // Mostrar mensagem de sucesso
+            document.getElementById('message').innerHTML = '<div class="success">✅ Cache limpo com sucesso! Agora você pode ir para o site.</div>';
+            
+            console.log('Cache e dados limpos com sucesso!');
+        }
+        
+        function goToSite() {
+            window.location.href = '/index.html';
+        }
+    </script>
+</body>
+</html>

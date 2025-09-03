@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Upload - Belle de Jour</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .image-preview {
+            margin-top: 10px;
+            max-width: 200px;
+            max-height: 200px;
+            border: 2px dashed #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #ff5252;
+        }
+        .debug-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Teste de Upload - Belle de Jour</h1>
+        <p>Este é um teste simplificado para verificar o upload de imagem.</p>
+        
+        <div class="form-group">
+            <label for="brand-name">Nome da Marca:</label>
+            <input type="text" id="brand-name" value="Belle de Jour">
+        </div>
+        
+        <div class="form-group">
+            <label for="bio-text">Biografia:</label>
+            <textarea id="bio-text" rows="3">✨ Vista-se para impressionar! ✨</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="profile-image">Imagem de Perfil:</label>
+            <input type="file" id="profile-image" accept="image/*" onchange="previewImage(this, 'current-profile-img')">
+            <div class="image-preview">
+                <img id="current-profile-img" src="belle-de-jour-logo.svg" alt="Preview">
+            </div>
+        </div>
+        
+        <button class="btn" onclick="testSave()">💾 Testar Salvamento</button>
+        <button class="btn" onclick="showDebug()">🔧 Mostrar Debug</button>
+        
+        <div id="debug-info" class="debug-info" style="display: none;"></div>
+    </div>
+    
+    <script>
+        let testData = {
+            brandName: 'Belle de Jour',
+            bio: '✨ Vista-se para impressionar! ✨',
+            profileImage: 'belle-de-jour-logo.svg'
+        };
+        
+        function previewImage(input, targetId) {
+            console.log('previewImage chamada:', input, targetId);
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    console.log('Imagem carregada:', e.target.result.substring(0, 50) + '...');
+                    document.getElementById(targetId).src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function testSave() {
+            // Coletar dados
+            testData.brandName = document.getElementById('brand-name').value;
+            testData.bio = document.getElementById('bio-text').value;
+            
+            // Capturar imagem
+            const currentProfileImg = document.getElementById('current-profile-img');
+            if (currentProfileImg && currentProfileImg.src) {
+                testData.profileImage = currentProfileImg.src;
+            }
+            
+            // Salvar no localStorage
+            localStorage.setItem('testData', JSON.stringify(testData));
+            
+            alert('Dados salvos! Verifique o debug para mais informações.');
+            console.log('Dados salvos:', testData);
+        }
+        
+        function showDebug() {
+            const debugDiv = document.getElementById('debug-info');
+            const currentImg = document.getElementById('current-profile-img');
+            
+            const debugInfo = `
+=== DEBUG INFO ===
+Dados atuais:
+${JSON.stringify(testData, null, 2)}
+
+Elemento de imagem:
+- Existe: ${currentImg ? 'Sim' : 'Não'}
+- Src: ${currentImg ? currentImg.src : 'N/A'}
+- Src length: ${currentImg ? currentImg.src.length : 0}
+
+LocalStorage:
+${localStorage.getItem('testData') || 'Nenhum dado salvo'}
+            `;
+            
+            debugDiv.textContent = debugInfo;
+            debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Carregar dados salvos ao inicializar
+        window.onload = function() {
+            const saved = localStorage.getItem('testData');
+            if (saved) {
+                try {
+                    testData = JSON.parse(saved);
+                    document.getElementById('brand-name').value = testData.brandName;
+                    document.getElementById('bio-text').value = testData.bio;
+                    document.getElementById('current-profile-img').src = testData.profileImage;
+                } catch (error) {
+                    console.error('Erro ao carregar dados:', error);
+                }
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belle de Jour - Painel Administrativo</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <h1><i class="fas fa-cog"></i> Painel Administrativo - Belle de Jour</h1>
+                <div class="header-actions">
+                    <button class="btn btn-preview" onclick="previewSite()">
+                        <i class="fas fa-eye"></i> Visualizar Site
+                    </button>
+                    <button class="btn btn-save" onclick="saveAllChanges()">
+                        <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                    <button class="btn btn-secondary" onclick="debugHTML()">
+                        🔧 Debug HTML
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetData()">
+                        🔄 Reset Dados
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadHTML()">
+                        📥 Baixar HTML
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="admin-nav">
+            <button class="nav-tab active" onclick="showTab('profile')">
+                <i class="fas fa-user"></i> Perfil
+            </button>
+            <button class="nav-tab" onclick="showTab('products')">
+                <i class="fas fa-box"></i> Produtos
+            </button>
+            <button class="nav-tab" onclick="showTab('links')">
+                <i class="fas fa-link"></i> Links
+            </button>
+            <button class="nav-tab" onclick="showTab('social')">
+                <i class="fas fa-share-alt"></i> Redes Sociais
+            </button>
+            <button class="nav-tab" onclick="showTab('settings')">
+                <i class="fas fa-cog"></i> Configurações
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Profile Tab -->
+            <div id="profile-tab" class="tab-content active">
+                <div class="section-card">
+                    <h2><i class="fas fa-user-circle"></i> Informações do Perfil</h2>
+                    
+                    <div class="form-group">
+                        <label for="brand-name">Nome da Marca</label>
+                        <input type="text" id="brand-name" value="Belle de Jour" placeholder="Digite o nome da marca">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio-text">Biografia/Descrição</label>
+                        <textarea id="bio-text" rows="4" placeholder="Digite a descrição da marca">✨ Vista-se para impressionar! Looks femininos e masculinos com estilo e conforto para qualquer ocasião. As tendências mais quentes direto para Shopee, Amazon e Mercado Livre. Descontos exclusivos e moda acessível que combina com você! ✨</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profile-image">Imagem de Perfil</label>
+                        <div class="image-upload">
+                            <div class="current-image">
+                                <img id="current-profile-img" src="belle-de-jour-logo.svg" alt="Imagem atual">
+                            </div>
+                            <div class="upload-controls">
+                                <input type="file" id="profile-image" accept="image/*" onchange="previewImage(this, 'current-profile-img')">
+                                <label for="profile-image" class="btn btn-upload">
+                                    <i class="fas fa-upload"></i> Escolher Imagem
+                                </label>
+                                <small>Formatos aceitos: JPG, PNG, SVG (máx. 2MB)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="products-tab" class="tab-content">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2><i class="fas fa-fire"></i> Promoções Imperdíveis</h2>
+                        <button class="btn btn-add" onclick="addProduct('promocoes')">
+                            <i class="fas fa-plus"></i> Adicionar Produto
+                        </button>
+                    </div>
+                    <div id="promocoes-products" class="products-list">
+                        <!-- Produtos serão carregados aqui -->
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2><i class="fas fa-heart"></i> Queridinhos da Galera</h2>
+                        <button class="btn btn-add" onclick="addProduct('queridinhos')">
+                            <i class="fas fa-plus"></i> Adicionar Produto
+                        </button>
+                    </div>
+                    <div id="queridinhos-products" class="products-list">
+                        <!-- Produtos serão carregados aqui -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Links Tab -->
+            <div id="links-tab" class="tab-content">
+                <div class="section-card">
+                    <h2><i class="fas fa-shopping-bag"></i> Links dos Marketplaces</h2>
+                    
+                    <div class="form-group">
+                        <label for="shopee-link">Link da Shopee</label>
+                        <input type="url" id="shopee-link" value="https://shopee.com.br/bellle.de.jour" placeholder="https://shopee.com.br/sua-loja">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amazon-link">Link da Amazon</label>
+                        <input type="url" id="amazon-link" placeholder="https://amazon.com.br/sua-loja">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mercadolivre-link">Link do Mercado Livre</label>
+                        <input type="url" id="mercadolivre-link" placeholder="https://mercadolivre.com.br/sua-loja">
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h2><i class="fab fa-whatsapp"></i> WhatsApp</h2>
+                    
+                    <div class="form-group">
+                        <label for="whatsapp-number">Número do WhatsApp</label>
+                        <input type="tel" id="whatsapp-number" value="5581994854368" placeholder="5511999999999">
+                        <small>Formato: código do país + DDD + número (sem espaços ou símbolos)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whatsapp-message">Mensagem Padrão VIP</label>
+                        <textarea id="whatsapp-message" rows="3" placeholder="Mensagem que será enviada automaticamente">Oi! Quero fazer parte do Clube VIP e receber desconto exclusivo!</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Tab -->
+            <div id="social-tab" class="tab-content">
+                <div class="section-card">
+                    <h2><i class="fas fa-share-alt"></i> Redes Sociais</h2>
+                    
+                    <div class="form-group">
+                        <label for="instagram-link">Instagram</label>
+                        <input type="url" id="instagram-link" placeholder="https://instagram.com/seu-perfil">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tiktok-link">TikTok</label>
+                        <input type="url" id="tiktok-link" placeholder="https://tiktok.com/@seu-perfil">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telegram-link">Telegram</label>
+                        <input type="url" id="telegram-link" placeholder="https://t.me/seu-canal">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="section-card">
+                    <h2><i class="fas fa-palette"></i> Personalização</h2>
+                    
+                    <div class="form-group">
+                        <label for="primary-color">Cor Principal</label>
+                        <input type="color" id="primary-color" value="#ff6b6b">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="secondary-color">Cor Secundária</label>
+                        <input type="color" id="secondary-color" value="#4ecdc4">
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h2><i class="fas fa-download"></i> Backup e Exportação</h2>
+                    
+                    <div class="backup-actions">
+                        <button class="btn btn-secondary" onclick="exportData()">
+                            <i class="fas fa-download"></i> Exportar Dados
+                        </button>
+                        <button class="btn btn-secondary" onclick="importData()">
+                            <i class="fas fa-upload"></i> Importar Dados
+                        </button>
+                        <input type="file" id="import-file" accept=".json" style="display: none;" onchange="handleImport(this)">
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para edição de produtos -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Produto</h3>
+                <button class="modal-close" onclick="closeProductModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="product-name">Nome do Produto</label>
+                    <input type="text" id="product-name" placeholder="Digite o nome do produto">
+                </div>
+
+                <div class="form-group">
+                    <label for="product-price">Preço</label>
+                    <input type="text" id="product-price" placeholder="149,90">
+                </div>
+
+                <div class="form-group">
+                    <label for="product-image-url">URL da Imagem</label>
+                    <input type="url" id="product-image-url" placeholder="https://exemplo.com/imagem.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label for="product-image-file">Ou enviar imagem</label>
+                    <input type="file" id="product-image-file" accept="image/*" onchange="previewProductImage(this)">
+                </div>
+
+                <div class="image-preview">
+                    <img id="product-preview" src="" alt="Preview" style="display: none;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeProductModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveProduct()">Salvar Produto</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-updater.js"></script>
+    <script src="admin-script.js"></script>
+</body>
+</html>

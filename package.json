@@ -1,0 +1,33 @@
+{
+  "name": "seu-estilo-oficial-biosite",
+  "version": "1.0.0",
+  "description": "Biosite moderno para a loja de roupas Seu Estilo Oficial",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve . -l 3000",
+    "build": "echo 'Build completed - static site ready for deployment'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "biosite",
+    "loja",
+    "roupas",
+    "moda",
+    "ecommerce",
+    "landing-page"
+  ],
+  "author": "Seu Estilo Oficial",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seuusuario/seu-estilo-oficial-biosite.git"
+  },
+  "homepage": "https://seu-estilo-oficial.vercel.app",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
