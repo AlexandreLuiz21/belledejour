@@ -1,6 +1,6 @@
-# 🌟 Seu Estilo Oficial - Biosite
+# 🌟 Belle de Jour - Biosite
 
-Biosite moderno e responsivo para a loja de roupas **Seu Estilo Oficial**. Design sofisticado com fundo escuro, toques dourados/rosé e interface otimizada para conversão.
+Biosite moderno e responsivo para a loja de roupas **Belle de Jour**. Design sofisticado com fundo escuro, toques dourados/rosé e interface otimizada para conversão.
 
 ## ✨ Características
 
@@ -39,10 +39,10 @@ Biosite moderno e responsivo para a loja de roupas **Seu Estilo Oficial**. Desig
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seuusuario/seu-estilo-oficial-biosite.git
+git clone https://github.com/AlexandreLuiz21/belledejour.git
 
 # Entre no diretório
-cd seu-estilo-oficial-biosite
+cd belledejour
 
 # Instale as dependências
 npm install
