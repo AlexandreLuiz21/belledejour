@@ -1,7 +1,7 @@
 {
-  "name": "seu-estilo-oficial-biosite",
+  "name": "belledejour-biosite",
   "version": "1.0.0",
-  "description": "Biosite moderno para a loja de roupas Seu Estilo Oficial",
+  "description": "Biosite moderno para a loja Belle de Jour",
   "main": "index.html",
   "scripts": {
     "start": "npx serve .",
@@ -17,16 +17,16 @@
     "ecommerce",
     "landing-page"
   ],
-  "author": "Seu Estilo Oficial",
+  "author": "Belle de Jour",
   "license": "MIT",
   "devDependencies": {
     "serve": "^14.2.1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/seuusuario/seu-estilo-oficial-biosite.git"
+    "url": "https://github.com/AlexandreLuiz21/belledejour.git"
   },
-  "homepage": "https://seu-estilo-oficial.vercel.app",
+  "homepage": "https://belledejour-biosite.vercel.app",
   "engines": {
     "node": ">=14.0.0"
   }
