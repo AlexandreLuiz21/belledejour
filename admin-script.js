@@ -11,13 +11,15 @@ let siteData = {
                 id: 1,
                 name: 'Vestido Elegância Premium',
                 price: '149,90',
-                image: 'img/441401-2.jpeg'
+                image: 'img/441401-2.jpeg',
+                link: 'https://shopee.com.br/Vestido-Jeans-Feminino-Com-Elastano-Vestido-De-festa-Cor-Escura-jeans-Azul-Escuro-Vestido-Com-Z%C3%ADper-i.816055584.19198279961'
             },
             {
                 id: 2,
                 name: 'Jaqueta Jeans Street',
                 price: '179,90',
-                image: 'img/SKU - 3223.jpeg'
+                image: 'img/SKU - 3223.jpeg',
+                link: 'https://shopee.com.br/Kit-3-Shorts-Feminino-Jeans-Short-Curto-Jeans-Rasgado-Feminino-Promo%C3%A7%C3%A3o-Cintura-Alta-i.816055584.23198817718'
             }
         ],
         queridinhos: [
@@ -25,13 +27,15 @@ let siteData = {
                 id: 3,
                 name: 'Conjunto Fitness Power',
                 price: '119,90',
-                image: 'img/SKU-342010(7).jpeg'
+                image: 'img/SKU-342010(7).jpeg',
+                link: 'https://shopee.com.br/Conjunto-de-Alfaiataria-Preto-Cropped-com-Bot%C3%A3o-e-Cal%C3%A7a-Belle-de-Jour-i.816055584.23394309194'
             },
             {
                 id: 4,
                 name: 'Camisa Slim Elegance',
                 price: '99,90',
-                image: 'img/441401-2.jpeg'
+                image: 'img/441401-2.jpeg',
+                link: 'https://shopee.com.br/Bermuda-Masculina-Jeans-Cor-Branca-Belle-de-Jour-i.816055584.23893697286'
             }
         ]
     },
@@ -59,7 +63,7 @@ let currentEditingCategory = null;
 let nextProductId = 5;
 
 // Inicialização
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadDataFromLocalStorage();
     loadFormData();
     loadProducts();
@@ -75,7 +79,7 @@ function showTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
     });
-    
+
     // Adiciona active class na tab selecionada
     document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
     document.getElementById(`${tabName}-tab`).classList.add('active');
@@ -87,19 +91,25 @@ function loadFormData() {
     document.getElementById('brand-name').value = siteData.profile.brandName;
     document.getElementById('bio-text').value = siteData.profile.bio;
     document.getElementById('current-profile-img').src = siteData.profile.profileImage;
-    
+
+    // Sincronizar galeria de imagens
+    const galleryImg = document.getElementById('current-profile-img-gallery');
+    if (galleryImg) {
+        galleryImg.src = siteData.profile.profileImage;
+    }
+
     // Links
     document.getElementById('shopee-link').value = siteData.links.shopee;
     document.getElementById('amazon-link').value = siteData.links.amazon;
     document.getElementById('mercadolivre-link').value = siteData.links.mercadolivre;
     document.getElementById('whatsapp-number').value = siteData.links.whatsappNumber;
     document.getElementById('whatsapp-message').value = siteData.links.whatsappMessage;
-    
+
     // Social
     document.getElementById('instagram-link').value = siteData.social.instagram;
     document.getElementById('tiktok-link').value = siteData.social.tiktok;
     document.getElementById('telegram-link').value = siteData.social.telegram;
-    
+
     // Settings
     document.getElementById('primary-color').value = siteData.settings.primaryColor;
     document.getElementById('secondary-color').value = siteData.settings.secondaryColor;
@@ -114,7 +124,7 @@ function loadProducts() {
 function loadProductsInCategory(category) {
     const container = document.getElementById(`${category}-products`);
     container.innerHTML = '';
-    
+
     siteData.products[category].forEach(product => {
         const productElement = createProductElement(product, category);
         container.appendChild(productElement);
@@ -148,14 +158,25 @@ function createProductElement(product, category) {
 function addProduct(category) {
     currentEditingProduct = null;
     currentEditingCategory = category;
-    
+
     // Limpar formulário
     document.getElementById('product-name').value = '';
     document.getElementById('product-price').value = '';
+    document.getElementById('product-link').value = '';
     document.getElementById('product-image-url').value = '';
     document.getElementById('product-image-file').value = '';
-    document.getElementById('product-preview').style.display = 'none';
-    
+
+    // Limpar preview da imagem
+    const preview = document.getElementById('product-preview');
+    preview.src = '';
+    preview.style.display = 'none';
+
+    // Limpar área de preview
+    const imagePreview = document.getElementById('image-preview');
+    if (imagePreview) {
+        imagePreview.innerHTML = '';
+    }
+
     // Mostrar modal
     document.getElementById('product-modal').classList.add('active');
 }
@@ -163,20 +184,21 @@ function addProduct(category) {
 function editProduct(productId, category) {
     const product = siteData.products[category].find(p => p.id === productId);
     if (!product) return;
-    
+
     currentEditingProduct = product;
     currentEditingCategory = category;
-    
+
     // Preencher formulário
     document.getElementById('product-name').value = product.name;
     document.getElementById('product-price').value = product.price;
+    document.getElementById('product-link').value = product.link || '';
     document.getElementById('product-image-url').value = product.image;
-    
+
     // Mostrar preview da imagem
     const preview = document.getElementById('product-preview');
     preview.src = product.image;
     preview.style.display = 'block';
-    
+
     // Mostrar modal
     document.getElementById('product-modal').classList.add('active');
 }
@@ -192,19 +214,38 @@ function deleteProduct(productId, category) {
 function saveProduct() {
     const name = document.getElementById('product-name').value.trim();
     const price = document.getElementById('product-price').value.trim();
+    const link = document.getElementById('product-link').value.trim();
     const imageUrl = document.getElementById('product-image-url').value.trim();
-    
+    const previewImg = document.getElementById('product-preview');
+
     if (!name || !price) {
         showMessage('Por favor, preencha o nome e preço do produto.', 'error');
         return;
     }
-    
+
+    // Capturar imagem: priorizar upload de arquivo, depois URL, depois imagem padrão
+    let finalImage;
+    if (previewImg && previewImg.src && previewImg.style.display !== 'none' && !previewImg.src.includes('data:image/svg+xml')) {
+        // Se há uma imagem de preview carregada (upload de arquivo)
+        finalImage = previewImg.src;
+        console.log('📸 Usando imagem de upload:', finalImage.substring(0, 50) + '...');
+    } else if (imageUrl) {
+        // Se há uma URL fornecida
+        finalImage = imageUrl;
+        console.log('🔗 Usando URL da imagem:', finalImage);
+    } else {
+        // Imagem padrão
+        finalImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDQwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjRjhGOUZBIi8+CjxwYXRoIGQ9Ik0xNTAgMTUwSDI1MFYzNTBIMTUwVjE1MFoiIGZpbGw9IiNERUUyRTYiLz4KPHRleHQgeD0iMjAwIiB5PSIyNzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZDNzU3RCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2VtPC90ZXh0Pgo8L3N2Zz4=';
+        console.log('🖼️ Usando imagem padrão');
+    }
+
     const productData = {
         name: name,
         price: price,
-        image: imageUrl || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDQwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjRjhGOUZBIi8+CjxwYXRoIGQ9Ik0xNTAgMTUwSDI1MFYzNTBIMTUwVjE1MFoiIGZpbGw9IiNERUUyRTYiLz4KPHRleHQgeD0iMjAwIiB5PSIyNzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZDNzU3RCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2VtPC90ZXh0Pgo8L3N2Zz4='
+        image: finalImage,
+        link: link
     };
-    
+
     if (currentEditingProduct) {
         // Editar produto existente
         Object.assign(currentEditingProduct, productData);
@@ -215,13 +256,32 @@ function saveProduct() {
         siteData.products[currentEditingCategory].push(productData);
         showMessage('Produto adicionado com sucesso!', 'success');
     }
-    
+
     loadProductsInCategory(currentEditingCategory);
     closeProductModal();
 }
 
 function closeProductModal() {
     document.getElementById('product-modal').classList.remove('active');
+
+    // Limpar formulário
+    document.getElementById('product-name').value = '';
+    document.getElementById('product-price').value = '';
+    document.getElementById('product-link').value = '';
+    document.getElementById('product-image-url').value = '';
+    document.getElementById('product-image-file').value = '';
+
+    // Limpar preview da imagem
+    const preview = document.getElementById('product-preview');
+    preview.src = '';
+    preview.style.display = 'none';
+
+    // Limpar área de preview
+    const imagePreview = document.getElementById('image-preview');
+    if (imagePreview) {
+        imagePreview.innerHTML = '';
+    }
+
     currentEditingProduct = null;
     currentEditingCategory = null;
 }
@@ -232,26 +292,26 @@ function compressImage(file, maxWidth = 800, quality = 0.8) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
-        
-        img.onload = function() {
+
+        img.onload = function () {
             // Calcular novas dimensões mantendo proporção
             let { width, height } = img;
             if (width > maxWidth) {
                 height = (height * maxWidth) / width;
                 width = maxWidth;
             }
-            
+
             canvas.width = width;
             canvas.height = height;
-            
+
             // Desenhar imagem redimensionada
             ctx.drawImage(img, 0, 0, width, height);
-            
+
             // Converter para base64 com compressão
             const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
             resolve(compressedDataUrl);
         };
-        
+
         const reader = new FileReader();
         reader.onload = (e) => img.src = e.target.result;
         reader.readAsDataURL(file);
@@ -262,20 +322,28 @@ function previewImage(input, targetId) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
         console.log('📸 Upload de imagem iniciado:', file.name, file.size + ' bytes');
-        
+
         // Verificar tamanho do arquivo (máx 5MB)
         if (file.size > 5 * 1024 * 1024) {
             showMessage('⚠️ Arquivo muito grande! Máximo 5MB permitido.', 'error');
             return;
         }
-        
+
         // Comprimir imagem antes de exibir
         compressImage(file, 800, 0.8).then(compressedDataUrl => {
             document.getElementById(targetId).src = compressedDataUrl;
-            
+
+            // Sincronizar com a galeria se for a logo principal
+            if (targetId === 'current-profile-img') {
+                const galleryImg = document.getElementById('current-profile-img-gallery');
+                if (galleryImg) {
+                    galleryImg.src = compressedDataUrl;
+                }
+            }
+
             const originalSize = (file.size / 1024).toFixed(1);
             const compressedSize = (compressedDataUrl.length / 1024).toFixed(1);
-            
+
             console.log(`✅ Imagem comprimida: ${originalSize}KB → ${compressedSize}KB`);
             showMessage('📸 Imagem carregada e otimizada! Clique em "Salvar Alterações" para confirmar.', 'success');
         }).catch(error => {
@@ -287,66 +355,83 @@ function previewImage(input, targetId) {
 
 function previewProductImage(input) {
     if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
+        const file = input.files[0];
+        console.log('📸 Upload de imagem de produto iniciado:', file.name, file.size + ' bytes');
+
+        // Verificar tamanho do arquivo (máx 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showMessage('⚠️ Arquivo muito grande! Máximo 5MB permitido.', 'error');
+            return;
+        }
+
+        // Comprimir imagem antes de exibir
+        compressImage(file, 800, 0.8).then(compressedDataUrl => {
             const preview = document.getElementById('product-preview');
-            preview.src = e.target.result;
+            preview.src = compressedDataUrl;
             preview.style.display = 'block';
-            
+
             // Limpar URL se arquivo foi selecionado
             document.getElementById('product-image-url').value = '';
-        };
-        reader.readAsDataURL(input.files[0]);
+
+            const originalSize = (file.size / 1024).toFixed(1);
+            const compressedSize = (compressedDataUrl.length / 1024).toFixed(1);
+
+            console.log(`✅ Imagem de produto comprimida: ${originalSize}KB → ${compressedSize}KB`);
+            showMessage('📸 Imagem carregada e otimizada! Clique em "Salvar Produto" para confirmar.', 'success');
+        }).catch(error => {
+            console.error('❌ Erro ao comprimir imagem do produto:', error);
+            showMessage('❌ Erro ao processar imagem. Tente novamente.', 'error');
+        });
     }
 }
 
 // Salvar todas as alterações
 function saveAllChanges() {
     console.log('=== INICIANDO SALVAMENTO ===');
-    
+
     // Coletar dados dos formulários
     siteData.profile.brandName = document.getElementById('brand-name').value;
     siteData.profile.bio = document.getElementById('bio-text').value;
-    
+
     // Capturar imagem de perfil (se foi alterada)
     const currentProfileImg = document.getElementById('current-profile-img');
     if (currentProfileImg && currentProfileImg.src) {
         console.log('Salvando imagem de perfil:', currentProfileImg.src.substring(0, 50) + '...');
         siteData.profile.profileImage = currentProfileImg.src;
     }
-    
+
     siteData.links.shopee = document.getElementById('shopee-link').value;
     siteData.links.amazon = document.getElementById('amazon-link').value;
     siteData.links.mercadolivre = document.getElementById('mercadolivre-link').value;
     siteData.links.whatsappNumber = document.getElementById('whatsapp-number').value;
     siteData.links.whatsappMessage = document.getElementById('whatsapp-message').value;
-    
+
     siteData.social.instagram = document.getElementById('instagram-link').value;
     siteData.social.tiktok = document.getElementById('tiktok-link').value;
     siteData.social.telegram = document.getElementById('telegram-link').value;
-    
+
     siteData.settings.primaryColor = document.getElementById('primary-color').value;
     siteData.settings.secondaryColor = document.getElementById('secondary-color').value;
-    
+
     console.log('Dados coletados:', {
         brandName: siteData.profile.brandName,
         bio: siteData.profile.bio.substring(0, 50) + '...',
         profileImageLength: siteData.profile.profileImage ? siteData.profile.profileImage.length : 0
     });
-    
+
     // Salvar no localStorage
     const saveSuccess = saveDataToLocalStorage();
-    
+
     if (saveSuccess) {
         console.log('✅ Dados salvos no localStorage com sucesso');
-        
+
         // Gerar novo index.html
         generateIndexHTML();
         console.log('HTML gerado');
-        
+
         // Atualizar o arquivo index.html real
         updateRealIndexHTML();
-        
+
         showMessage('✅ Alterações salvas com sucesso! Dados persistidos no navegador.', 'success');
     } else {
         console.error('❌ Falha ao salvar dados');
@@ -442,7 +527,7 @@ function generateIndexHTML() {
     <script src="script.js"></script>
 </body>
 </html>`;
-    
+
     // Salvar o HTML gerado (simulação - em um ambiente real, isso seria enviado para o servidor)
     localStorage.setItem('generatedHTML', html);
 }
@@ -462,25 +547,25 @@ function downloadHTML() {
     const html = localStorage.getItem('generatedHTML');
     if (html) {
         console.log('Baixando index.html...');
-        
+
         // Criar um blob com o HTML
         const blob = new Blob([html], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
-        
+
         // Criar um link temporário para download
         const a = document.createElement('a');
         a.href = url;
         a.download = 'index.html';
         a.style.display = 'none';
-        
+
         // Adicionar ao DOM, clicar e remover
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        
+
         // Limpar o URL do blob
         URL.revokeObjectURL(url);
-        
+
         console.log('✅ Arquivo index.html baixado com sucesso!');
         showMessage('📥 Arquivo index.html baixado! Use apenas se necessário.', 'info');
     } else {
@@ -490,7 +575,7 @@ function downloadHTML() {
 
 function generateProductsSection(category, title, icon) {
     if (siteData.products[category].length === 0) return '';
-    
+
     return `
         <!-- ${title} -->
         <section class="products-section">
@@ -516,7 +601,7 @@ function generateProductsSection(category, title, icon) {
 function previewSite() {
     // Salvar alterações primeiro
     saveAllChanges();
-    
+
     // Abrir o site principal em nova aba
     window.open('index.html', '_blank');
 }
@@ -524,16 +609,16 @@ function previewSite() {
 // Debug HTML
 function debugHTML() {
     console.log('=== DEBUG INFO COMPLETO ===');
-    
+
     // Dados atuais na memória
     console.log('1. siteData atual:', siteData);
-    
+
     // Elemento de imagem
     const profileImg = document.getElementById('current-profile-img');
     console.log('2. Profile Image Element:', profileImg);
     console.log('   - Src:', profileImg ? profileImg.src : 'Elemento não encontrado');
     console.log('   - Src length:', profileImg ? profileImg.src.length : 0);
-    
+
     // LocalStorage
     const savedData = localStorage.getItem('belleDeJourData');
     console.log('3. LocalStorage belleDeJourData:', savedData ? 'Existe' : 'Não existe');
@@ -546,7 +631,7 @@ function debugHTML() {
             console.error('   - Erro ao fazer parse:', e);
         }
     }
-    
+
     // HTML gerado
     generateIndexHTML();
     const html = localStorage.getItem('generatedHTML');
@@ -554,12 +639,12 @@ function debugHTML() {
     if (html) {
         console.log('   - HTML length:', html.length);
     }
-    
+
     // Formulários
     console.log('5. Valores dos formulários:');
     console.log('   - Brand Name:', document.getElementById('brand-name')?.value);
     console.log('   - Bio:', document.getElementById('bio-text')?.value?.substring(0, 50) + '...');
-    
+
     showMessage('🔧 Debug completo enviado para o console. Pressione F12 para ver todos os detalhes.', 'info');
 }
 
@@ -569,7 +654,7 @@ function resetData() {
         // Limpar localStorage
         localStorage.removeItem('belleDeJourData');
         localStorage.removeItem('generatedHTML');
-        
+
         // Resetar siteData para valores padrão
         siteData = {
             profile: {
@@ -624,11 +709,11 @@ function resetData() {
                 secondaryColor: '#4ecdc4'
             }
         };
-        
+
         // Recarregar formulários e produtos
         loadFormData();
         loadProducts();
-        
+
         console.log('✅ Dados resetados para valores padrão');
         showMessage('🔄 Dados resetados com sucesso! Todos os valores voltaram ao padrão.', 'success');
     }
@@ -637,13 +722,13 @@ function resetData() {
 // Backup e exportação
 function exportData() {
     const dataStr = JSON.stringify(siteData, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
     const link = document.createElement('a');
     link.href = URL.createObjectURL(dataBlob);
     link.download = `belle-de-jour-backup-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
-    
+
     showMessage('Backup exportado com sucesso!', 'success');
 }
 
@@ -654,10 +739,10 @@ function importData() {
 function handleImport(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             try {
                 const importedData = JSON.parse(e.target.result);
-                
+
                 if (confirm('Tem certeza que deseja importar estes dados? Isso substituirá todas as configurações atuais.')) {
                     siteData = importedData;
                     loadFormData();
@@ -678,23 +763,23 @@ function saveDataToLocalStorage() {
     try {
         const dataString = JSON.stringify(siteData);
         const sizeInMB = (dataString.length / 1024 / 1024).toFixed(2);
-        
+
         console.log(`💾 Tentando salvar dados (${sizeInMB}MB)...`);
-        
+
         // Verificar se o tamanho está dentro do limite do localStorage (geralmente 5-10MB)
         if (dataString.length > 5 * 1024 * 1024) {
             console.warn('⚠️ Dados muito grandes para localStorage:', sizeInMB + 'MB');
             showMessage('⚠️ Imagem muito grande! Tente uma imagem menor.', 'error');
             return false;
         }
-        
+
         localStorage.setItem('belleDeJourData', dataString);
         console.log('✅ Dados salvos com sucesso no localStorage');
         return true;
-        
+
     } catch (error) {
         console.error('❌ Erro ao salvar no localStorage:', error);
-        
+
         if (error.name === 'QuotaExceededError') {
             showMessage('❌ Espaço insuficiente! Imagem muito grande para salvar.', 'error');
         } else {
@@ -720,18 +805,18 @@ function showMessage(text, type = 'info') {
     // Remove mensagens existentes
     const existingMessages = document.querySelectorAll('.message');
     existingMessages.forEach(msg => msg.remove());
-    
+
     const message = document.createElement('div');
     message.className = `message ${type}`;
     message.innerHTML = `
         <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
         ${text}
     `;
-    
+
     // Inserir no topo do main
     const main = document.querySelector('.admin-main');
     main.insertBefore(message, main.firstChild);
-    
+
     // Remover após 5 segundos
     setTimeout(() => {
         message.remove();
@@ -739,7 +824,7 @@ function showMessage(text, type = 'info') {
 }
 
 // Event Listeners
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     // Fechar modal clicando fora
     if (e.target.classList.contains('modal')) {
         closeProductModal();
@@ -747,13 +832,13 @@ document.addEventListener('click', function(e) {
 });
 
 // Atalhos de teclado
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     // Ctrl+S para salvar
     if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
         saveAllChanges();
     }
-    
+
     // Escape para fechar modal
     if (e.key === 'Escape') {
         closeProductModal();

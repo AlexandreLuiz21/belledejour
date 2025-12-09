@@ -39,6 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.title = `${siteData.profile.brandName} - Biosite Oficial`;
                 }
                 
+                // Carregar produtos dinamicamente
+                loadProducts(siteData);
+                
+                // Carregar links dos marketplaces
+                loadMarketplaceLinks(siteData);
+                
+                // Carregar links sociais
+                loadSocialLinks(siteData);
+                
                 console.log('✅ Dados carregados e aplicados com sucesso!');
             } catch (error) {
                 console.error('❌ Erro ao carregar dados salvos:', error);
@@ -248,7 +257,140 @@ function shareProfile() {
 
 // Função para analytics simples (pode ser integrada com Google Analytics)
 function trackClick(element, action) {
-    console.log(`Clique registrado: ${action} em ${element}`);
-    // Aqui você pode integrar com Google Analytics ou outra ferramenta
-    // gtag('event', 'click', { 'event_category': 'engagement', 'event_label': action });
+    console.log(`🔗 Clique rastreado: ${action}`);
+    // Aqui você pode adicionar código para enviar dados para Google Analytics, etc.
+}
+
+// Função para carregar produtos dinamicamente
+function loadProducts(siteData) {
+    if (!siteData.products) return;
+    
+    // Carregar promoções
+    if (siteData.products.promocoes && siteData.products.promocoes.length > 0) {
+        const promocoesGrid = document.querySelector('.products-section:first-of-type .products-grid');
+        if (promocoesGrid) {
+            promocoesGrid.innerHTML = '';
+            siteData.products.promocoes.forEach(product => {
+                const productHTML = `
+                    <div class="product-card">
+                        <a href="${product.link || '#'}" target="_blank" class="product-link">
+                            <div class="product-image">
+                                <img src="${product.image}" alt="${product.name}">
+                            </div>
+                            <div class="product-info">
+                                <h3>${product.name}</h3>
+                                <p class="price">R$ ${product.price}</p>
+                            </div>
+                        </a>
+                    </div>
+                `;
+                promocoesGrid.innerHTML += productHTML;
+            });
+            console.log('🔥 Promoções carregadas dinamicamente');
+        }
+    }
+    
+    // Carregar queridinhos
+    if (siteData.products.queridinhos && siteData.products.queridinhos.length > 0) {
+        const queridinhosGrid = document.querySelector('.products-section:last-of-type .products-grid');
+        if (queridinhosGrid) {
+            queridinhosGrid.innerHTML = '';
+            siteData.products.queridinhos.forEach(product => {
+                const productHTML = `
+                    <div class="product-card">
+                        <a href="${product.link || '#'}" target="_blank" class="product-link">
+                            <div class="product-image">
+                                <img src="${product.image}" alt="${product.name}">
+                            </div>
+                            <div class="product-info">
+                                <h3>${product.name}</h3>
+                                <p class="price">R$ ${product.price}</p>
+                            </div>
+                        </a>
+                    </div>
+                `;
+                queridinhosGrid.innerHTML += productHTML;
+            });
+            console.log('❤️ Queridinhos carregados dinamicamente');
+        }
+    }
+}
+
+// Função para carregar links dos marketplaces
+function loadMarketplaceLinks(siteData) {
+    if (!siteData.links) return;
+    
+    const shopeeLink = document.querySelector('.marketplace-btn.shopee');
+    if (shopeeLink && siteData.links.shopee) {
+        shopeeLink.href = siteData.links.shopee;
+    }
+    
+    const amazonLink = document.querySelector('.marketplace-btn.amazon');
+    if (amazonLink && siteData.links.amazon) {
+        amazonLink.href = siteData.links.amazon;
+        amazonLink.style.opacity = siteData.links.amazon ? '1' : '0.5';
+    }
+    
+    const mercadoLivreLink = document.querySelector('.marketplace-btn.mercadolivre');
+    if (mercadoLivreLink && siteData.links.mercadolivre) {
+        mercadoLivreLink.href = siteData.links.mercadolivre;
+        mercadoLivreLink.style.opacity = siteData.links.mercadolivre ? '1' : '0.5';
+    }
+    
+    // Atualizar link do WhatsApp
+    const whatsappBtns = document.querySelectorAll('.whatsapp-btn, .social-icon.whatsapp');
+    if (siteData.links.whatsappNumber && siteData.links.whatsappMessage) {
+        const whatsappUrl = `https://wa.me/${siteData.links.whatsappNumber}?text=${encodeURIComponent(siteData.links.whatsappMessage)}`;
+        whatsappBtns.forEach(btn => {
+            btn.href = whatsappUrl;
+        });
+    }
+    
+    console.log('🛒 Links dos marketplaces atualizados');
+}
+
+// Função para carregar links sociais
+function loadSocialLinks(siteData) {
+    if (!siteData.social) return;
+    
+    const instagramLinks = document.querySelectorAll('.social-icon.instagram, .vip-social.instagram');
+    if (siteData.social.instagram) {
+        instagramLinks.forEach(link => {
+            link.href = siteData.social.instagram;
+            link.style.opacity = '1';
+        });
+    } else {
+        instagramLinks.forEach(link => {
+            link.style.opacity = '0.5';
+            link.href = '#';
+        });
+    }
+    
+    const tiktokLinks = document.querySelectorAll('.social-icon.tiktok');
+    if (siteData.social.tiktok) {
+        tiktokLinks.forEach(link => {
+            link.href = siteData.social.tiktok;
+            link.style.opacity = '1';
+        });
+    } else {
+        tiktokLinks.forEach(link => {
+            link.style.opacity = '0.5';
+            link.href = '#';
+        });
+    }
+    
+    const telegramLinks = document.querySelectorAll('.vip-social.telegram');
+    if (siteData.social.telegram) {
+        telegramLinks.forEach(link => {
+            link.href = siteData.social.telegram;
+            link.style.opacity = '1';
+        });
+    } else {
+        telegramLinks.forEach(link => {
+            link.style.opacity = '0.5';
+            link.href = '#';
+        });
+    }
+    
+    console.log('📱 Links sociais atualizados');
 }
